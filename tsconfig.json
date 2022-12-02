@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+      "target": "ES5",
+      "lib": ["ES2021"],
+      "moduleResolution": "node",
+      "declaration": true,
+      "sourceMap": false,
+      "strict": true,
+      "outDir": "dist",
+      "esModuleInterop": true
+    },
+    "include": ["src"],
+    "exclude": [
+      "./tests/",
+      "./node_modules/",
+      "./dist/"
+    ],
+}
