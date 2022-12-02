@@ -1,7 +1,22 @@
 {
-  "name": "blake3-hkdf-js",
+  "name": "@web3-social/blake3-hkdf-js",
+  "description": "HMAC-based Extract-and-Expand Key Derivation Function (HKDF) using blake3",
   "version": "0.1.1",
   "license": "MIT",
+  "author": {
+    "name": "web3-social",
+    "url": "https://github.com/web3-social"
+  },
+  "repository": "https://github.com/web3-social/blake3-hkdf-js",
+  "bugs": {
+    "url": "https://github.com/web3-social/blake3-hkdf-js"
+  },
+  "keywords": [
+    "blake3",
+    "crypto",
+    "hkdf",
+    "kdf"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
