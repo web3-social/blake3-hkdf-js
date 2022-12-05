@@ -1,7 +1,7 @@
 {
   "name": "@web3-social/blake3-hkdf-js",
   "description": "HMAC-based Extract-and-Expand Key Derivation Function (HKDF) using blake3",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "author": {
     "name": "web3-social",

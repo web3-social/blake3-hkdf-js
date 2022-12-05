@@ -2,11 +2,23 @@ import * as sys from '@web3-social/blake3-hkdf-js-sys';
 
 const isHex = /^[0-9A-Fa-f]+$/;
 
-const fromHex = (hex: string): Buffer => {
+const fromHex = (hex: string): Uint8Array => {
     hex = hex.startsWith('0x') || hex.startsWith('0X') ? hex.slice(2) : hex;
-    if (!isHex.test(hex)) throw new Error('Invalid hex string');
-    return Buffer.from(hex, 'hex');
+    if (!(hex.length % 2 == 0 && isHex.test(hex))) throw new Error('Invalid hex string');
+    const bytes = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < hex.length; i += 2) {
+        bytes[i / 2] = parseInt(hex.slice(i, i + 2), 16);
+    }
+    return bytes;
 };
+
+const fromAscii = (ascii: string): Uint8Array => {
+    const bytes = new Uint8Array(ascii.length);
+    for (let i = 0; i < ascii.length; i++) {
+        bytes[i] = ascii.charCodeAt(i);
+    }
+    return bytes;
+}
 
 const registry =
     FinalizationRegistry == undefined ? undefined : new FinalizationRegistry((instance: sys.Blake3) => instance.free());
@@ -44,7 +56,7 @@ export class Blake3 {
      * @returns BLAKE3 keyed hasher
      * @throws Error if key is not 32 bytes
      */
-    static newKeyed(key: Buffer | string): Blake3 {
+    static newKeyed(key: Uint8Array | string): Blake3 {
         if (typeof key === 'string') key = fromHex(key);
         return new Blake3(sys.Blake3.new_keyed(key));
     }
@@ -85,11 +97,11 @@ export class Blake3 {
     /**
      * Add input bytes to the hash state. You can call this any number of times.
      *
-     * @param input Buffer or string encoded in utf8
+     * @param input Uint8Array or string encoded in utf8
      */
-    update(input: Buffer | string) {
+    update(input: Uint8Array | string) {
         if (this._instance == undefined) throw new Error('instance is freed');
-        if (typeof input === 'string') input = Buffer.from(input, 'utf8');
+        if (typeof input === 'string') input = fromAscii(input);
         this._instance.update(input);
     }
 
@@ -104,7 +116,7 @@ export class Blake3 {
      */
     finalize() {
         if (this._instance == undefined) throw new Error('instance is freed');
-        return Buffer.from(this._instance.finalize());
+        return this._instance.finalize();
     }
 
     /**
@@ -135,15 +147,15 @@ const BLAKE3 = new Blake3();
 /**
  * Hash the input bytes or string.
  *
- * @param input Buffer or string encoded in utf8
+ * @param input Uint8Array or string encoded in utf8
  * @returns Hash
  */
-export const hash = (input: Buffer | string) => {
-    if (typeof input === 'string') input = Buffer.from(input, 'utf8');
+export const hash = (input: Uint8Array | string) => {
+    if (typeof input === 'string') input = fromAscii(input);
     BLAKE3.update(input);
     const hash = BLAKE3.finalize();
     BLAKE3.reset();
-    return Buffer.from(hash);
+    return hash;
 };
 
 /**
@@ -156,11 +168,11 @@ export const hash = (input: Buffer | string) => {
  * @returns derived key of length bytes
  * @throws Error if length is not valid
  */
-export const hkdf = (length: number, ikm: Buffer | string, salt?: Buffer | string, info?: Buffer | string) => {
+export const hkdf = (length: number, ikm: Uint8Array | string, salt?: Uint8Array | string, info?: Uint8Array | string) => {
     if (typeof ikm === 'string') ikm = fromHex(ikm);
     if (typeof salt === 'string') salt = fromHex(salt);
     if (typeof info === 'string') info = fromHex(info);
-    return Buffer.from(sys.hkdf(length, ikm, salt, info));
+    return sys.hkdf(length, ikm, salt, info);
 };
 
 /**
@@ -170,10 +182,10 @@ export const hkdf = (length: number, ikm: Buffer | string, salt?: Buffer | strin
  * @param salt opetional salt (recommended)
  * @returns pseudo-random key
  */
-export const extract = (ikm: Buffer | string, salt?: Buffer | string) => {
+export const extract = (ikm: Uint8Array | string, salt?: Uint8Array | string) => {
     if (typeof ikm === 'string') ikm = fromHex(ikm);
     if (typeof salt === 'string') salt = fromHex(salt);
-    return Buffer.from(sys.extract(ikm, salt));
+    return sys.extract(ikm, salt);
 };
 
 /**
@@ -185,8 +197,8 @@ export const extract = (ikm: Buffer | string, salt?: Buffer | string) => {
  * @returns output keying
  * @throws Error if length is not valid
  */
-export const expand = (prk: Buffer | string, length: number, info?: Buffer | string) => {
+export const expand = (prk: Uint8Array | string, length: number, info?: Uint8Array | string) => {
     if (typeof prk === 'string') prk = fromHex(prk);
     if (typeof info === 'string') info = fromHex(info);
-    return Buffer.from(sys.expand(prk, length, info));
+    return sys.expand(prk, length, info);
 };

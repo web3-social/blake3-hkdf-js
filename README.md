@@ -45,7 +45,7 @@ shortcut for `(new blake3.BLAKE3()).update(input).finialize()`
 
 **Kind**: global function
 
-**Returns**: `Buffer` - hash value
+**Returns**: `Uint8Array` - hash value
 
 ## blake3.hkdf(length, ikm, salt, info)
 
@@ -53,16 +53,16 @@ HKDF-BLAKE3 function
 
 **Kind**: global function
 
-**Returns**: `Buffer` - key derived
+**Returns**: `Uint8Array` - key derived
 
 **Throw**: `Error` - if length is not valid
 
 | Param | Type | Optional | Description |
 | --- | --- | --- | --- |
 | length | `number` | false | length of output key |
-| ikm | `Buffer` \| `string` | false | input key material |
-| salt | `Buffer` \| `string` | true | salt |
-| info | `Buffer` \| `string` | true | optional context and application specific information |
+| ikm | `Uint8Array` \| `string` | false | input key material |
+| salt | `Uint8Array` \| `string` | true | salt |
+| info | `Uint8Array` \| `string` | true | optional context and application specific information |
 
 ## blake3.extract(ikm, salt)
 
@@ -70,12 +70,12 @@ extract function
 
 **Kind**: global function
 
-**Returns**: `Buffer` - pseudorandom key
+**Returns**: `Uint8Array` - pseudorandom key
 
 | Param | Type | Optional | Description |
 | --- | --- | --- | --- |
-| ikm | `Buffer` \| `string` | false | input key material |
-| salt | `Buffer` \| `string` | true | salt |
+| ikm | `Uint8Array` \| `string` | false | input key material |
+| salt | `Uint8Array` \| `string` | true | salt |
 
 ## blake3.expand(prk, length, info)
 
@@ -83,15 +83,15 @@ expand function
 
 **Kind**: global function
 
-**Returns**: `Buffer` - key derived
+**Returns**: `Uint8Array` - key derived
 
 **Throw**: `Error` - if length is not valid
 
 | Param | Type | Optional | Description |
 | --- | --- | --- | --- |
-| prk | `Buffer` \| `string` | false | pseudorandom key |
+| prk | `Uint8Array` \| `string` | false | pseudorandom key |
 | length | `number` | false | length of output key |
-| info | `Buffer` \| `string` | true | optional context and application specific information |
+| info | `Uint8Array` \| `string` | true | optional context and application specific information |
 
 
 ## blake3.Blake3
@@ -113,7 +113,7 @@ This is suitable for use as a message authentication code, for example to replac
 
 | Param | Type | Optional | Description |
 | --- | --- | --- | --- |
-| key | `Buffer` \| `string` | false | key |
+| key | `Uint8Array` \| `string` | false | key |
 
 ### blake3.Blake3.newDeriveKey(context)
 Construct a new Hasher for the key derivation function. See derive_key.
@@ -143,9 +143,9 @@ Add input bytes to the hash state. You can call this any number of times.
 
 | Param | Type | Optional | Description |
 | --- | --- | --- | --- |
-| input | `Buffer` \| `string` | false | input |
+| input | `Uint8Array` \| `string` | false | input |
 
-Note: string will be converted to Buffer with `Buffer.from(input, "utf8")`
+Note: string will be converted to Uint8Array with `Uint8Array.from(input, "utf8")`
 
 ### blake3.Blake3#finialize()
 Finalize the hash state and return the Hash of the input.
@@ -154,7 +154,7 @@ This method is idempotent. Calling it twice will give the same result. You can a
 
 **Kind**: member function
 
-**Returns**: `Buffer` - hash value
+**Returns**: `Uint8Array` - hash value
 
 **Throw**: `Error` - if hasher is freed
 
